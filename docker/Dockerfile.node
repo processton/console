@@ -1,0 +1,23 @@
+FROM node:alpine
+
+# Also exposing VSCode debug ports
+EXPOSE 8000
+#--no-cache
+RUN \
+  apk add nasm bash autoconf automake libtool gcc vips-tools vips-dev fftw-dev g++ make && \
+  rm -fR /var/cache/apk/*
+
+COPY package.json .
+# COPY yarn.lock .
+RUN export NODE_OPTIONS="--no-deprecation"
+
+RUN yarn global add gatsby-cli@^5.11.0
+RUN yarn install --prefer-offline --frozen-lockfile
+
+COPY . /app
+
+WORKDIR /app
+
+RUN yarn install && yarn cache clean
+
+CMD ["yarn", "start", "-H", "0.0.0.0"]

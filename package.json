@@ -1,0 +1,39 @@
+{
+  "name": "my-first-gatsby-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "My First Gatsby Site",
+  "author": "Megan Sullivan",
+  "keywords": [
+    "gatsby"
+  ],
+  "scripts": {
+    "build:css": "postcss src/styles/global.css -o src/common.css",
+    "watch:css": "postcss src/styles/global.css -o src/common.css -w",
+    "dev": "gatsby develop",
+    "develop": "NODE_OPTIONS='--no-deprecation' gatsby develop -H 0.0.0.0",
+    "start": "NODE_OPTIONS='--no-deprecation' gatsby develop -H 0.0.0.0",
+    "build": "NODE_OPTIONS='--no-deprecation' gatsby build",
+    "serve": "NODE_OPTIONS='--no-deprecation' gatsby serve",
+    "clean": "gatsby clean"
+  },
+  "dependencies": {
+    "@mdx-js/react": "^2.1.2",
+    "classnames": "^2.5.1",
+    "gatsby": "^5.13.0",
+    "gatsby-plugin-image": "^3.0.0",
+    "gatsby-plugin-mdx": "^5.0.0",
+    "gatsby-plugin-sharp": "^5.0.0",
+    "gatsby-source-custom-api": "^2.3.6",
+    "gatsby-source-filesystem": "^5.0.0",
+    "gatsby-transformer-sharp": "^5.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "gatsby-plugin-postcss": "^6.14.0",
+    "postcss": "^8.5.1",
+    "tailwindcss": "3"
+  }
+}

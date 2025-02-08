@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    font-family: "Roboto", serif;
+    letter-spacing: 0.5px;
+}
+
+.secondary-sidebar{
+    height: calc(100vh - 3.05rem);
+    top: 3.05rem
+}
+.third-sidebar{
+    height: calc(100vh - 3.05rem);
+    top: 3.05rem;
+    left: 27rem;
+}
+.min-h-contentare{
+    min-height: calc(100vh - 5.5rem);
+}
