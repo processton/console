@@ -53,7 +53,7 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
 
-    let sources = result.data.allData.nodes;
+    let sources = result.data?.allData?.nodes;
 
     if(sources.length <= 0) return;
 
