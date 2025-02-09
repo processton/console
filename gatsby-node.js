@@ -55,9 +55,9 @@ exports.createPages = async ({ graphql, actions }) => {
 
     let sources = result.data?.allData?.nodes;
 
-    if(sources.length <= 0) return;
+    if(!sources || sources.length <= 0) return;
 
-    sources.forEach((source, index) => {
+    sources?.forEach((source, index) => {
 
         let consolePrefix = `${source.title} v ${source.version}`;
 
