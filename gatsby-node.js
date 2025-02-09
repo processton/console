@@ -9,140 +9,125 @@ exports.createPages = async ({ graphql, actions }) => {
   const redirectTemplate = path.resolve(`src/templates/redirect.js`);
   const tenantTemplate = path.resolve(`src/templates/tenant.js`);
   const applicationTemplate = path.resolve(`src/templates/application.js`);
-  const result = await graphql(`
-    query {
-      allData {
-        nodes {
-          title
-          version
-          tenants {
-            name
-            slug
-            logo
-            defaultapps {
+
+  try {
+    const result = await graphql(`
+      query {
+        allDeployer {
+          nodes {
+            title
+            version
+            tenants {
               name
               slug
-              icon
-              domains {
-                domain
-              }
-              links {
+              logo
+              defaultapps {
                 name
-                icon
-                path
                 slug
+                icon
+                domains {
+                  domain
+                }
+                links {
+                  name
+                  icon
+                  path
+                  slug
+                }
               }
-            }
-            applications {
-              name
-              slug
-              icon
-              domains {
-                domain
-              }
-              links {
+              applications {
                 name
-                icon
-                path
                 slug
+                icon
+                domains {
+                  domain
+                }
+                links {
+                  name
+                  icon
+                  path
+                  slug
+                }
               }
             }
           }
         }
       }
+    `);
+
+    if (!result || !result.data || !result.data.allData) {
+      console.warn("Error: No data returned from GraphQL.");
+      return;
     }
-  `);
 
-    let sources = result.data?.allData?.nodes;
+    let sources = result.data.allData.nodes;
+    if (!sources || sources.length === 0) {
+      console.warn("Warning: No sources found.");
+      return;
+    }
 
-    if(!sources || sources.length <= 0) return;
+    sources.forEach((source) => {
+      console.log(`${source.title} v${source.version} | Source Compilation`);
 
-    sources?.forEach((source, index) => {
+      let tenants = source.tenants || [];
+      if (tenants.length === 0) return;
 
-        let consolePrefix = `${source.title} v ${source.version}`;
+      tenants.forEach((tenant) => {
+        console.log(`${tenant.name} | Creating index page`);
 
-        console.log(
-          `${consolePrefix} | Source Complilation`
-        );
+        createPage({
+          path: `/${tenant.slug}`,
+          component: tenantTemplate,
+          context: {
+            source: { name: source.name },
+            tenant,
+          },
+        });
 
-        let tenants = source.tenants;
+        let apps = [...(tenant.defaultapps || []), ...(tenant.applications || [])];
 
-        if (tenants.length <= 0) return;
+        apps.forEach((application) => {
+          console.log(`${tenant.name} | ${application.name} | Creating application page`);
 
-        tenants.forEach((tenant) => {
+          let firstLink = false;
 
-            consolePrefix = `${tenant.name}`;
-            console.log(`${consolePrefix} | Creating index page`);
+          (application.links || []).forEach((link) => {
+            console.log(`${tenant.name} | ${application.name} | ${link.name} | Creating link page`);
+
+            if (!firstLink) {
+              firstLink = `/${tenant.slug}/${application.slug}/${link.slug}`;
+            }
 
             createPage({
-              path: `${tenant.slug}`,
-              component: tenantTemplate,
+              path: `/${tenant.slug}/${application.slug}/${link.slug}`,
+              component: applicationTemplate,
               context: {
-                source: {
-                    name: source.name
-                },
-                tenant
+                source: { name: source.name },
+                tenant,
+                application,
+                link,
               },
             });
+          });
 
-            let apps = [...tenant.defaultapps];
-            Array.prototype.push.apply(apps, tenant.applications);
-
-            if (apps.length <= 0) return;
-
-            apps.forEach((application) => {
-
-                consolePrefix = `${consolePrefix} | ${application.name}`;
-                console.log(`${consolePrefix} Creating application page`);
-
-                var firstLink = false;
-
-                application.links.forEach((link) => {
-                    
-                    consolePrefix = `${consolePrefix} | ${link.name}`;
-                    console.log(`${consolePrefix} Creating link page`);
-
-                    if(!firstLink){
-                        firstLink = `/${tenant.slug}/${application.slug}/${link.slug}`;
-                    }
-                    
-                    createPage({
-                      path: `/${tenant.slug}/${application.slug}/${link.slug}`,
-                      component: applicationTemplate,
-                      context: {
-                        source: {
-                          name: source.name,
-                        },
-                        tenant,
-                        application,
-                        link,
-                      },
-                    });
-                });
-
-                if (process.env.NODE_ENV != 'development'){
-
-                    createRedirect({
-                        fromPath: `/${tenant.slug}/${application.slug}`,
-                        toPath: firstLink,
-                    });
-
-                }else{
-
-                    createPage({
-                      path: `/${tenant.slug}/${application.slug}`,
-                      component: redirectTemplate,
-                      context: {
-                        toPath: firstLink,
-                      },
-                    });
-                }
-
-
-            });
-
-
-        })
-
-    })
+          if (firstLink) {
+            if (process.env.NODE_ENV !== "development") {
+              createRedirect({
+                fromPath: `/${tenant.slug}/${application.slug}`,
+                toPath: firstLink,
+              });
+            } else {
+              createPage({
+                path: `/${tenant.slug}/${application.slug}`,
+                component: redirectTemplate,
+                context: { toPath: firstLink },
+              });
+            }
+          }
+        });
+      });
+    });
+  } catch (error) {
+    console.error("Cannot building website", error);
+  }
 };
