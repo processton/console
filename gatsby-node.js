@@ -13,7 +13,7 @@ exports.createPages = async ({ graphql, actions }) => {
   try {
     const result = await graphql(`
       query {
-        allDeployer {
+        allData {
           nodes {
             title
             version
@@ -128,6 +128,16 @@ exports.createPages = async ({ graphql, actions }) => {
       });
     });
   } catch (error) {
-    console.error("Cannot building website", error);
+    console.log("Cannot building website", error);
   }
+};
+
+exports.onCreateWebpackConfig = ({ actions, plugins }) => {
+  actions.setWebpackConfig({
+    plugins: [
+      plugins.define({
+        skipEnvCheck: true,
+      }),
+    ],
+  });
 };

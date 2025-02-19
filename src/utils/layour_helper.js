@@ -16,10 +16,31 @@ export function getPageTitle(context){
 
 export function getRequiredIcons(context) {
 
-    let icons =
-      "add,apps,dashboard,deployed_code,deployed_code_history,diversity_2,event,favorite,fingerprint,flag,groups,home,hub,question_mark,router,search,settings,tenancy,view_apps";
+  let icons = "";
 
-    return icons.trim();
+  if(context?.icon){
+    icons += `${context.icon},`;
+  }
+
+  if(context?.link){
+    if(context.link.icon){
+      icons += `${context.link.icon},`;
+    }
+  }
+
+  if (context?.application?.links) {
+    context.application.links.forEach((link) => {
+      if (link.icon) {
+        icons += `${link.icon},`;
+      }
+    });
+  }
+
+  icons = `${icons}add,apps,dashboard,deployed_code,deployed_code_history,diversity_2,event,favorite,fingerprint,flag,groups,home,hub,question_mark,router,search,settings,tenancy,view_apps`;
+
+  return Array.from(new Set(icons.split(",")))
+    .sort()
+    .toString();
 
 }
 
@@ -40,7 +61,6 @@ export function generateLinkUrlWithDomain(context) {
     if (context?.link?.path) {
       linkSlug = context?.link?.path;
     }
-
     return `http://${domain}/${linkSlug}`;
 }
 
