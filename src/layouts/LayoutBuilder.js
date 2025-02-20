@@ -1,9 +1,9 @@
 import * as React from 'react'
 import ProviderContainer from './ProviderContainer';
 
-const LayoutBuilder = ({ pageContext, children }) => {
+const LayoutBuilder = ({ children }) => {
   return (
-    <ProviderContainer pageContext={pageContext}>
+    <ProviderContainer>
       <div>{children}</div>
     </ProviderContainer>
   );

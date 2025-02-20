@@ -1,14 +1,19 @@
 import * as React from 'react'
 import { useRef, useState } from "react"
 import { getPageTitle, getRequiredIcons } from '../utils/layour_helper';
+import LoadingScreen from './LoadingScreen';
 
 const Iframe = ({ url, setUrl }) => {
   
   const [iframeHeight, setIframeHeight] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const IFrameRef = useRef();
 
-  const handleIfrmeLoad = (e) => console.dir(e.target.contentWindow.location);
+  const handleIfrmeLoad = (e) => {
+    console.log(e);
+    setIsLoading(false);
+  };
 
   const handlePayload = (payload) => {
     switch (payload.type) {
@@ -37,15 +42,21 @@ const Iframe = ({ url, setUrl }) => {
   }
 
   return (
-    <iframe
-      src={url}
-      ref={IFrameRef}
-      onLoad={handleIfrmeLoad}
-      className="w-full min-h-contentare"
-      style={{
-        height: `${iframeHeight}px`,
-      }}
-    />
+    <>
+      {!isLoading ? (
+        <iframe
+          src={url}
+          ref={IFrameRef}
+          onLoad={handleIfrmeLoad}
+          className="w-full min-h-contentare"
+          style={{
+            height: `${iframeHeight}px`,
+          }}
+        />
+      ) : (
+        <LoadingScreen moduleName="Application" pageName="Application" />
+      )}
+    </>
   );
 };
 

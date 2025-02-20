@@ -1,19 +1,34 @@
 import * as React from 'react'
-import { useState } from "react";
-import LayoutBuilder from "../layouts/LayoutBuilder";
+import { useState, useEffect, useContext } from "react";
+import LayoutBuilderContext from "../contexts/LayoutBuilderContext";
 import Seo from '../components/seo'
 import TenantContainer from '../layouts/TenantContainer';
 import ApplicationContainer from '../layouts/ApplicationContainer';
 import Iframe from '../components/Iframe';
 import { generateLinkUrlWithDomain } from '../utils/layour_helper';
+import LayoutBuilder from '../layouts/LayoutBuilder';
+
 
 const IndexPage = ({ pageContext }) => {
 
-  const [iframeSrc, setIframeSrc] = useState(generateLinkUrlWithDomain(pageContext ));
+  const { context, setContext } = useContext(LayoutBuilderContext);
+
+  const [iframeSrc, setIframeSrc] = useState('');
+
+  useEffect(() => {
+    setContext(pageContext);
+    setIframeSrc(generateLinkUrlWithDomain(pageContext));
+  })
+
+  useEffect(() => {
+    console.log('iframeSrc', iframeSrc);
+  },[iframeSrc]);
+
+  
   
   return (
-    <LayoutBuilder pageContext={pageContext}>
-      <TenantContainer pageContext={pageContext}>
+    <LayoutBuilder>
+      <TenantContainer>
         <ApplicationContainer pageContext={pageContext}>
           <Iframe url={iframeSrc} setUrl={setIframeSrc} />
         </ApplicationContainer>

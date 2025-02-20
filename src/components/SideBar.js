@@ -1,10 +1,15 @@
 import * as React from 'react'
+import { useContext } from "react";
 import { StaticImage } from "gatsby-plugin-image";
 import { Link } from "gatsby";
 import CalendarMini from './CaledarMini';
 import classNames from "classnames";
+import LayoutBuilderContext from '../contexts/LayoutBuilderContext';
+import { generateAppUrl } from '../utils/layour_helper';
 
-const SideBar = ({ pageContext }) => {
+const SideBar = () => {
+
+  const { context, availableApps } = useContext(LayoutBuilderContext);
 
   const [showMiniCalendar, setShowMiniCalendar] = React.useState(false)
 
@@ -34,6 +39,23 @@ const SideBar = ({ pageContext }) => {
           >
             <span className="material-symbols-outlined m-1">event</span>
           </a>
+          {availableApps.map((app) => (
+            <Link
+              to={generateAppUrl(context, app.slug)}
+              className="cursor-pointer items-center justify-center rounded-xl hover:bg-green-800 hover:text-white"
+            >
+              {app?.logo ? (
+                <img
+                  src="https://redpixelthemes.com/assets/images/icon-portfolio-green.svg"
+                  className="block h-4 w-4 m-1"
+                />
+              ) : (
+                <span className="material-symbols-outlined m-1">
+                  {app.icon}
+                </span>
+              )}
+            </Link>
+          ))}
           <a className="cursor-pointer items-center justify-center rounded-xl hover:bg-green-800 hover:text-white">
             <span className="material-symbols-outlined m-1">add</span>
           </a>

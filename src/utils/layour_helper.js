@@ -54,7 +54,7 @@ export function generateLinkUrlWithDomain(context) {
 
     let domain = '';
     let linkSlug = '';
-    console.log(context.application);
+    console.log(context);
     if (context?.application?.domains.length > 0) {
       domain = context?.application?.domains[0]?.domain;
     }

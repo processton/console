@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-const Footer = ({ pageContext }) => {
+const Footer = ({ }) => {
   return (
     <>
       <p></p>
