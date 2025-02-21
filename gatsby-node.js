@@ -11,6 +11,33 @@ exports.createPages = async ({ graphql, actions }) => {
   const applicationTemplate = path.resolve(`src/templates/application.js`);
 
   try {
+    const resultCounter = await graphql(`
+      query {
+        allData {
+          nodes {
+            count
+          }
+        }
+      }
+    `);
+
+    if (!resultCounter || !resultCounter.data || !resultCounter.data.allData) {
+      console.warn("Error: No data returned from GraphQL.");
+      return;
+    }
+
+    let sourcesCounters = resultCounter.data.allData.nodes;
+    if (!sourcesCounters || sourcesCounters.length === 0) {
+      console.warn("Warning: No sources found.");
+      return;
+    }
+
+    if(sourcesCounters[0].count <= 0){
+      console.warn("Warning: No data found.");
+      return;
+    }
+
+
     const result = await graphql(`
       query {
         allData {

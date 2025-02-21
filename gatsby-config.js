@@ -16,7 +16,8 @@ module.exports = {
           deployer: `
               title: String
               version: Int
-              tenants: [tenant]
+              count: Int
+              tenants: [tenant] @default(value: [])
           `,
           tenant: `
               name: String
